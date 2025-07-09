@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JirStudy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4da6ff;
+      --button-bg: #1a73e8;
+      --button-text: #fff;
+      --bg-light: #ffffff;
+      --text-light: #222;
+      --bg-dark: #1a1a2e;
+      --text-dark: #f1f1f1;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Nunito', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg-light);
+      color: var(--text-light);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    body.dark-mode {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+    .profile {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .profile button {
+      background: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .profile button:hover {
+      background: #0f5ec2;
+      transform: scale(1.05);
+    }
+    .toggle-mode {
+      background: #fff;
+      color: #333;
+      border: none;
+      border-radius: 20px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .toggle-mode:hover {
+      background: #eee;
+      transform: scale(1.05);
+    }
+    main {
+      padding: 30px 20px;
+    }
+    .welcome {
+      text-align: center;
+      margin-bottom: 30px;
+      animation: fadeIn 1s ease;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .menu-item {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: slideUp 0.6s ease;
+    }
+    .menu-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .menu-item h3 {
+      margin-bottom: 10px;
+    }
+    .menu-item p {
+      font-size: 0.95rem;
+    }
+    .menu-item button {
+      margin-top: 10px;
+      background: var(--button-bg);
+      color: #fff;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .menu-item button:hover {
+      background: #0f5ec2;
+      transform: scale(1.05);
+    }
+    .section {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      animation: fadeIn 1s ease-in-out;
+    }
+    .section img {
+      width: 280px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .section .content {
+      flex: 1;
+    }
+    .section h3 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+    .section ul {
+      padding-left: 20px;
+    }
+    .section ul li::marker {
+      color: var(--primary);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 768px) {
+      .section {
+        flex-direction: column;
+        text-align: center;
+      }
+      .section img {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">📘 JirStudy</div>
+    <div class="profile">
+      <span>Halo, Adil!</span>
+      <button>👤 Profil</button>
+      <button>Keluar</button>
+      <button class="toggle-mode" onclick="toggleMode()">🌓 Mode</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="welcome">
+      <h2>Selamat datang kembali 👋</h2>
+      <p>Pilih menu belajar atau hiburan yang kamu mau:</p>
+    </div>
+
+    <div class="menu-grid">
+      <div class="menu-item">
+        <h3>📘 Materi Belajar</h3>
+        <p>Siswa bisa membaca materi sesuai kelas dan pelajaran</p>
+        <button onclick="location.href='materi.html'">Disini</button>
+      </div>
+      <div class="menu-item">
+        <h3>🧠 Quiz</h3>
+        <p>Uji pemahaman melalui soal pilihan ganda atau drag-and-drop</p>
+        <button onclick="location.href='quiz.html'">Disini</button>
+      </div>
+      <div class="menu-item">
+        <h3>🔥 Tantangan Harian</h3>
+        <p>Soal harian acak, bonus XP jika diselesaikan konsisten</p>
+        <button onclick="location.href='tantangan.html'">Disini</button>
+      </div>
+      <div class="menu-item">
+        <h3>🎮 Game Edukasi</h3>
+        <p>Bermain game edukatif berbasis HTML5</p>
+        <button onclick="location.href='game.html'">Disini</button>
+      </div>
+      <div class="menu-item">
+        <h3>💬 Forum Komunitas</h3>
+        <p>Tempat diskusi, tanya jawab soal atau curhat belajar</p>
+        <button onclick="location.href='forum.html'">Disini</button>
+      </div>
+      <div class="menu-item">
+        <h3>📚 Artikel Edukasi & Fun Facts</h3>
+        <p>Bacaan ringan tentang sains, sejarah, psikologi remaja, dll</p>
+        <button onclick="location.href='artikel.html'">Disini</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <img src="images/image 2.png" alt="konsep utama">
+      <div class="content">
+        <h3>📌 Konsep Utama: JirStudy</h3>
+        <p>JirStudy adalah sebuah platform edukatif berbasis web yang memadukan materi pelajaran sekolah, kuis interaktif, dan elemen hiburan seperti tantangan harian, game edukatif, dan komunitas belajar. Platform ini ditujukan untuk pelajar Indonesia, khususnya kelas 7–12 (SMP & SMA).</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <img src="images/image 1.png" alt="tujuan utama">
+      <div class="content">
+        <h3>🧠 Tujuan Utama</h3>
+        <ul>
+          <li>Meningkatkan minat belajar siswa dengan pendekatan yang menyenangkan dan interaktif.</li>
+          <li>Mempermudah akses materi pembelajaran sesuai kurikulum nasional.</li>
+          <li>Menciptakan komunitas belajar antar siswa yang aktif dan saling membantu.</li>
+          <li>Membangun habit belajar harian lewat sistem poin, streak, dan XP.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <img src="images/image 3.png" alt="fitur utama">
+      <div class="content">
+        <h3>🔑 Fitur Utama</h3>
+        <ul>
+          <li>Materi Lengkap Terstruktur</li>
+          <li>Video Pembelajaran</li>
+          <li>Latihan Soal & Try Out</li>
+          <li>Gamifikasi & Poin</li>
+          <li>Simulasi Ujian & Rapor Belajar</li>
+          <li>UI/UX Friendly & Dark Mode</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function toggleMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+  </script>
+</body>
+</html>
