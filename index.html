@@ -95,12 +95,23 @@
       border-radius: 10px;
       padding: 20px;
       text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s, scale 0.3s;
       animation: slideUp 0.6s ease;
+      opacity: 1;
     }
     .menu-item:hover {
       transform: translateY(-5px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .menu-item.hidden {
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+      height: 0;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
     .menu-item h3 {
       margin-bottom: 10px;
@@ -149,6 +160,16 @@
     .section ul li::marker {
       color: var(--primary);
     }
+    #searchInput {
+      margin: 0 auto 25px;
+      display: block;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-size: 1rem;
+      width: 90%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -165,6 +186,63 @@
       .section img {
         width: 100%;
       }
+    }
+    #chatbot-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    #chat-container {
+      display: none;
+      flex-direction: column;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 300px;
+      height: 400px;
+      background: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      z-index: 999;
+    }
+    #chat-messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+    #chat-messages div {
+      margin: 5px 0;
+    }
+    .user { text-align: right; color: #1a73e8; }
+    .ai { text-align: left; color: #333; }
+    #chat-input {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+    #chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+    }
+    #chat-input button {
+      padding: 10px;
+      border: none;
+      background: #1a73e8;
+      color: white;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -183,9 +261,10 @@
     <div class="welcome">
       <h2>Selamat datang kembali 👋</h2>
       <p>Pilih menu belajar atau hiburan yang kamu mau:</p>
+      <input type="text" id="searchInput" placeholder="Cari menu seperti 'quiz', 'game'...">
     </div>
 
-    <div class="menu-grid">
+    <div class="menu-grid" id="menuGrid">
       <div class="menu-item">
         <h3>📘 Materi Belajar</h3>
         <p>Siswa bisa membaca materi sesuai kelas dan pelajaran</p>
@@ -222,7 +301,7 @@
       <img src="images/image 2.png" alt="konsep utama">
       <div class="content">
         <h3>📌 Konsep Utama: JirStudy</h3>
-        <p>JirStudy adalah sebuah platform edukatif berbasis web yang memadukan materi pelajaran sekolah, kuis interaktif, dan elemen hiburan seperti tantangan harian, game edukatif, dan komunitas belajar. Platform ini ditujukan untuk pelajar Indonesia, khususnya kelas 7–12 (SMP & SMA).</p>
+        <p>JirStudy adalah platform edukatif berbasis web yang memadukan materi pelajaran sekolah, kuis interaktif, dan elemen hiburan seperti tantangan harian, game edukatif, dan komunitas belajar. Platform ini ditujukan untuk pelajar Indonesia kelas 7–12 (SMP & SMA).</p>
       </div>
     </div>
 
@@ -231,10 +310,10 @@
       <div class="content">
         <h3>🧠 Tujuan Utama</h3>
         <ul>
-          <li>Meningkatkan minat belajar siswa dengan pendekatan yang menyenangkan dan interaktif.</li>
-          <li>Mempermudah akses materi pembelajaran sesuai kurikulum nasional.</li>
-          <li>Menciptakan komunitas belajar antar siswa yang aktif dan saling membantu.</li>
-          <li>Membangun habit belajar harian lewat sistem poin, streak, dan XP.</li>
+          <li>Meningkatkan minat belajar siswa dengan pendekatan menyenangkan</li>
+          <li>Mempermudah akses materi pembelajaran</li>
+          <li>Menciptakan komunitas belajar aktif dan saling bantu</li>
+          <li>Membangun habit belajar lewat poin & XP</li>
         </ul>
       </div>
     </div>
@@ -255,10 +334,65 @@
     </div>
   </main>
 
+  <button id="chatbot-btn">💬</button>
+  <div id="chat-container">
+    <div id="chat-messages"></div>
+    <div id="chat-input">
+      <input type="text" id="userInput" placeholder="Tanya sesuatu...">
+      <button onclick="sendMessage()">Kirim</button>
+    </div>
+  </div>
+
   <script>
-    function toggleMode() {
-      document.body.classList.toggle('dark-mode');
+    const chatbotBtn = document.getElementById("chatbot-btn");
+    const chatContainer = document.getElementById("chat-container");
+    const chatMessages = document.getElementById("chat-messages");
+
+    chatbotBtn.addEventListener("click", () => {
+      chatContainer.style.display = chatContainer.style.display === "flex" ? "none" : "flex";
+    });
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const message = input.value.trim();
+      if (!message) return;
+      appendMessage("user", message);
+      input.value = "";
+
+      appendMessage("ai", "Mengetik...");
+      try {
+        const res = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer YOUR_API_KEY_HERE" // ← 🔐 GANTI dengan API Key asli kamu
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: message }]
+          })
+        });
+
+        if (!res.ok) throw new Error("Gagal fetch response");
+
+        const data = await res.json();
+        chatMessages.lastChild.remove();
+        const reply = data.choices?.[0]?.message?.content || "Maaf, tidak bisa menjawab.";
+        appendMessage("ai", reply);
+      } catch (err) {
+        chatMessages.lastChild.remove();
+        appendMessage("ai", "⚠️ Gagal menghubungi AI. Periksa API key atau koneksi.");
+      }
     }
+
+    function appendMessage(sender, text) {
+      const msg = document.createElement("div");
+      msg.className = sender;
+      msg.textContent = text;
+      chatMessages.appendChild(msg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
   </script>
 </body>
 </html>
