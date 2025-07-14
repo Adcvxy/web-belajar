@@ -344,55 +344,55 @@
   </div>
 
   <script>
-    const chatbotBtn = document.getElementById("chatbot-btn");
-    const chatContainer = document.getElementById("chat-container");
-    const chatMessages = document.getElementById("chat-messages");
+  function toggleMode() {
+    document.body.classList.toggle('dark-mode');
+  }
 
-    chatbotBtn.addEventListener("click", () => {
-      chatContainer.style.display = chatContainer.style.display === "flex" ? "none" : "flex";
+  document.getElementById("searchInput")?.addEventListener("input", function () {
+    const query = this.value.toLowerCase();
+    document.querySelectorAll(".menu-item").forEach(item => {
+      const title = item.querySelector("h3").textContent.toLowerCase();
+      const desc = item.querySelector("p").textContent.toLowerCase();
+      const match = title.includes(query) || desc.includes(query);
+      item.classList.toggle("hidden", !match);
     });
+  });
 
-    async function sendMessage() {
-      const input = document.getElementById("userInput");
-      const message = input.value.trim();
-      if (!message) return;
-      appendMessage("user", message);
-      input.value = "";
+  const chatbotBtn = document.getElementById("chatbot-btn");
+  const chatContainer = document.getElementById("chat-container");
+  const chatMessages = document.getElementById("chat-messages");
 
-      appendMessage("ai", "Mengetik...");
-      try {
-        const res = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer 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" // ← 🔐 GANTI dengan API Key asli kamu
-          },
-          body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: message }]
-          })
-        });
+  chatbotBtn.addEventListener("click", () => {
+    chatContainer.style.display = chatContainer.style.display === "flex" ? "none" : "flex";
+  });
 
-        if (!res.ok) throw new Error("Gagal fetch response");
+  function sendMessage() {
+    const input = document.getElementById("userInput");
+    const message = input.value.trim().toLowerCase();
+    if (!message) return;
+    appendMessage("user", input.value);
+    input.value = "";
 
-        const data = await res.json();
-        chatMessages.lastChild.remove();
-        const reply = data.choices?.[0]?.message?.content || "Maaf, tidak bisa menjawab.";
-        appendMessage("ai", reply);
-      } catch (err) {
-        chatMessages.lastChild.remove();
-        appendMessage("ai", "⚠️ Gagal menghubungi AI. Periksa API key atau koneksi.");
-      }
-    }
+    const responses = {
+      "halo": "Halo juga! Ada yang bisa aku bantu?",
+      "hai": "Hai! Mau belajar apa hari ini?",
+      "pagi": "Selamat pagi! Semangat belajar ya!",
+      "makasih": "Sama-sama! Semangat terus belajarnya 💪",
+      "terima kasih": "Sama-sama!",
+      "ngabstudy": "NgabStudy adalah platform belajar yang keren!"
+    };
 
-    function appendMessage(sender, text) {
-      const msg = document.createElement("div");
-      msg.className = sender;
-      msg.textContent = text;
-      chatMessages.appendChild(msg);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+    const reply = responses[message] || "Maaf, aku belum ngerti maksud kamu 😅";
+    setTimeout(() => appendMessage("ai", reply), 500);
+  }
 
-  </script>
+  function appendMessage(sender, text) {
+    const msg = document.createElement("div");
+    msg.className = sender;
+    msg.textContent = text;
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+</script>
 </body>
 </html>
